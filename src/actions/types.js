@@ -20,3 +20,4 @@ export const MOVIEGENRE_CHANGED = 'moviegenre_changed';
 export const MOVIEDESC_CHANGED = 'moviedesc_changed';
 export const MOVIELANG_CHANGED = 'movielang_changed';
 export const MOVIE_ADDED = 'movie_added';
+export const FETCH_MOVIES = 'fetch_movies';

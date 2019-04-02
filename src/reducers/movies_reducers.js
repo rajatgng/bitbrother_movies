@@ -4,7 +4,8 @@ import {
     MOVIELANG_CHANGED,
     MOVIENAME_CHANGED,
     MOVIEYEAR_CHANGED,
-    MOVIE_ADDED
+    MOVIE_ADDED,
+    FETCH_MOVIES
   } from '../actions/types';
 
   const INITIAL_STATE = {
@@ -15,6 +16,7 @@ import {
     desc:'',
     lang:'',
     image:'',
+    movies:{}
   };
   
   export default (state = INITIAL_STATE, action) => {
@@ -30,7 +32,9 @@ import {
       case MOVIEYEAR_CHANGED:
         return { ...state, year:action.payload };
       case MOVIE_ADDED:
-        return { ...state, ...INITIAL_STATE };
+        return { ...state, ...INITIAL_STATE,movies:state.movies };
+      case FETCH_MOVIES:
+        return {...state,movies:action.payload};
       default:
         return state;
     }

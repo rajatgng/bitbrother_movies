@@ -9,7 +9,7 @@ class AddMovie extends Component{
     onButtonPress = () => {
         const {name,year,genre,desc,lang} = this.props
         this.props.movieAdded({name,year,genre,desc,lang});
-       
+        this.props.navigation.navigate('Home');
       }
     onNameChange = (text) => {
         this.props.movieNameChanged(text);

@@ -3,22 +3,38 @@ import {Card ,Button,Icon,ListItem} from 'react-native-elements';
 import {connect} from 'react-redux';
  import React,{Component} from 'react';
  import {signoutUser} from '../src/actions/auth_action'
- import { Text, View, StyleSheet, FlatList,ScrollView,Dimensions,AsyncStorage } from 'react-native';
+ import { Text, View, StyleSheet,ListView,ScrollView } from 'react-native';
  import {LinearGradient} from 'expo';
- import firebase from 'firebase';
+ import _ from 'lodash';
+ import {fetchMovies} from '../src/actions/movies_action';
+
+
+
   class HomeScreen extends Component{ 
-    componentWillMount = async () => {
-      let token = await AsyncStorage.getItem('login_token');
-      const {currentUser} = firebase.auth();
-    console.log(currentUser);
-        firebase.database().ref(`Users/${token}/movies/`)
-       .on('value', snapshot => {
-        console.log(snapshot.val());
-       });
-    
-    
+
+    componentWillMount(){
+      //console.log("-------------------------------")
+    this.props.fetchMovies();
+    this.createDataSource(this.props.movies)
     };
-    
+
+    componentWillReceiveProps(nextProps){
+      //console.log("**********************")
+      this.createDataSource(nextProps);
+      //console.log(nextProps);
+    }
+
+    createDataSource(props){
+      const moviesdata = _.map(props.movies,(val,uid)=>{
+        return {...val,uid}
+     });
+     moviesdata.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)); 
+     //console.log(moviesdata);
+      const ds = new ListView.DataSource({
+        rowHasChanged:(r1,r2) => r1!=r2
+      });
+      this.dataSource = ds.cloneWithRows(moviesdata)
+    }
    static navigationOptions = ({navigation,state }) => {
      return{
       headerTitle:"Let's Ride",
@@ -41,25 +57,23 @@ import {connect} from 'react-redux';
     async  componentDidMount(){
        this.props.navigation.setParams({ signoutuser: this.signout_User });
  }
-   btnAction =  () =>{
-    this.props.navigation.navigate('MovieInfo')
-  // console.log(this.props.token)
+   btnAction =  (movie) =>{
+     
+    this.props.navigation.navigate('MovieInfo',{movie:movie});
    }
-
-    render(){
-      return(
-       <ScrollView style={styles.container}>  
-       <View>
-         <Card
-           title='Rajat'
+   renderRow = (movie) =>{
+     return (<View style={styles.container}>  
+        <View>
+          <Card
+           title={movie.name}
            titleStyle={styles.titleStyle}
            image={require('../assets/mgmap.png')}>
            <Text style={{marginBottom: 10,fontSize:20}}>
-           Contact no.: 9988776655
+          {movie.year}
            </Text>
           
            <Button
-             onPress = {this.btnAction}
+             onPress = {()=>{this.btnAction(movie)}}
              icon={<Icon name='code' color='#ffffff' />}
              backgroundColor='#03A9F4'
              buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
@@ -67,9 +81,16 @@ import {connect} from 'react-redux';
              />
          </Card>
        </View>
-     </ScrollView>
+     </View>);
+   }
+    render(){
+      return(
     
-
+        <ListView
+        enableEmptySections
+        dataSource={this.dataSource}
+        renderRow={this.renderRow}
+        />
       );
   }
  }
@@ -77,7 +98,7 @@ import {connect} from 'react-redux';
    container:{
      flex: 1,
    backgroundColor: '#fff',
-   marginTop: 25
+   marginBottom:5
    },
    viewStyle: {
      justifyContent: 'center',
@@ -95,10 +116,13 @@ import {connect} from 'react-redux';
    
  });
  
- const mapStateToProps = ({auth}) =>{
-  const {token} = auth;
-  return {token};
+ const mapStateToProps = ({movie}) =>{
+    const { movies } = movie;
+    // const moviesdata = _.map(movies,(val,uid)=>{
+    //   return {...val,uid}
+    // });
+   return {movies}
  }
  export default connect(mapStateToProps, {
-   signoutUser
+   signoutUser,fetchMovies
  })(HomeScreen);

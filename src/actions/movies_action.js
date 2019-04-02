@@ -4,11 +4,14 @@ import {
     MOVIELANG_CHANGED,
     MOVIENAME_CHANGED,
     MOVIEYEAR_CHANGED,
-    MOVIE_ADDED
+    MOVIE_ADDED,
+    FETCH_MOVIES
   } from './types';
   import firebase from 'firebase';
+  import _ from 'lodash';
   //var uuid = require('react-native-uuid');
   const UUID = require("uuid-v4");
+  import {AsyncStorage } from 'react-native';
   export const movieNameChanged = (text) => {
     return {
       type: MOVIENAME_CHANGED,
@@ -57,3 +60,12 @@ import {
             console.log('error ' , error)
         })
   };
+
+  export const fetchMovies = () => async dispatch =>{
+      let token = await AsyncStorage.getItem('login_token')
+        await firebase.database().ref(`Users/${token}/movies/`)
+       .on('value', snapshot => {
+        dispatch({type:FETCH_MOVIES, payload:snapshot.val()})
+       });
+      
+  }

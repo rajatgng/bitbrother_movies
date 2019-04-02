@@ -1,5 +1,5 @@
 import React ,{Component}from 'react';
-import { View,StyleSheet,Text,ActivityIndicator,ScrollView} from 'react-native';
+import { View,StyleSheet,Text,ActivityIndicator,ScrollView, KeyboardAvoidingView,} from 'react-native';
 import { connect } from 'react-redux';
 import { emailChanged, passwordChanged, signupUser,nameChanged,phoneChanged } from '../src/actions/auth_action';
 import { StackActions, NavigationActions } from 'react-navigation';
@@ -81,7 +81,7 @@ static navigationOptions = {
         locations={[0, 1.0]} 
         colors={['#5ED2A0', '#339CB1']}
         >
-        <View style={styles.container}>
+       <View style={styles.container}>
             <View style={styles.insidecontainer}>
                 <Input
                 containerStyle={styles.comp}
@@ -135,6 +135,7 @@ static navigationOptions = {
             </View>
             
         </View>
+       
         </LinearGradient>
     );  
     }
