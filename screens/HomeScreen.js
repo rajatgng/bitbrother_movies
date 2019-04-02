@@ -3,10 +3,22 @@ import {Card ,Button,Icon,ListItem} from 'react-native-elements';
 import {connect} from 'react-redux';
  import React,{Component} from 'react';
  import {signoutUser} from '../src/actions/auth_action'
- import { Text, View, StyleSheet, FlatList,ScrollView,Dimensions, } from 'react-native';
+ import { Text, View, StyleSheet, FlatList,ScrollView,Dimensions,AsyncStorage } from 'react-native';
  import {LinearGradient} from 'expo';
-  class HomeScreen extends Component{
-   
+ import firebase from 'firebase';
+  class HomeScreen extends Component{ 
+    componentWillMount = async () => {
+      let token = await AsyncStorage.getItem('login_token');
+      const {currentUser} = firebase.auth();
+    console.log(currentUser);
+        firebase.database().ref(`Users/${token}/movies/`)
+       .on('value', snapshot => {
+        console.log(snapshot.val());
+       });
+    
+    
+    };
+    
    static navigationOptions = ({navigation,state }) => {
      return{
       headerTitle:"Let's Ride",
@@ -29,9 +41,11 @@ import {connect} from 'react-redux';
     async  componentDidMount(){
        this.props.navigation.setParams({ signoutuser: this.signout_User });
  }
-   btnAction = () =>{
+   btnAction =  () =>{
     this.props.navigation.navigate('MovieInfo')
+  // console.log(this.props.token)
    }
+
     render(){
       return(
        <ScrollView style={styles.container}>  
@@ -81,7 +95,10 @@ import {connect} from 'react-redux';
    
  });
  
- 
- export default connect(null, {
+ const mapStateToProps = ({auth}) =>{
+  const {token} = auth;
+  return {token};
+ }
+ export default connect(mapStateToProps, {
    signoutUser
  })(HomeScreen);

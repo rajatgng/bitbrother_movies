@@ -11,3 +11,12 @@ export const SIGNUP_USER = 'signup_user';
 export const SIGNOUT_USER = 'signout_user';
 export const MAP_LOAD = 'map_load';
 // export const USER_DATA = 'user_data';
+
+//Movies
+
+export const MOVIENAME_CHANGED = 'moviename_changed';
+export const MOVIEYEAR_CHANGED = 'movieyear_changed';
+export const MOVIEGENRE_CHANGED = 'moviegenre_changed';
+export const MOVIEDESC_CHANGED = 'moviedesc_changed';
+export const MOVIELANG_CHANGED = 'movielang_changed';
+export const MOVIE_ADDED = 'movie_added';
