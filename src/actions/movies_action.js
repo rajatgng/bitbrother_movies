@@ -5,7 +5,10 @@ import {
     MOVIENAME_CHANGED,
     MOVIEYEAR_CHANGED,
     MOVIE_ADDED,
-    FETCH_MOVIES
+    FETCH_MOVIES,
+    COMMENT_ADDED,
+    FETCH_COMMENT,
+    COMMENTTEXT_CHANGED
   } from './types';
   import firebase from 'firebase';
   import _ from 'lodash';
@@ -68,4 +71,30 @@ import {
         dispatch({type:FETCH_MOVIES, payload:snapshot.val()})
        });
       
+  }
+  export const commentAdded = ({text,movieuid}) => async dispatch=>{
+    const {currentUser} = await firebase.auth();
+    
+    await firebase.database().ref(`Users/${currentUser.uid}/movies/${movieuid}/comments/`).push({
+       text
+        }).then((data)=>{
+        console.log("movie added successfully");
+        dispatch({type:COMMENT_ADDED});
+        }).catch((error)=>{
+            console.log('error ' , error)
+        })
+  }
+
+  export const fetchComment =  (movieuid) => async dispatch=>{
+    let token = await AsyncStorage.getItem('login_token')
+        await firebase.database().ref(`Users/${token}/movies/${movieuid}/comments/`)
+       .on('value', snapshot => {
+       dispatch({type:FETCH_COMMENT,payload:snapshot.val()})
+       });
+  }
+  export const commentTextChanged = (text) =>{
+    return {
+      type: COMMENTTEXT_CHANGED,
+      payload: text
+    };
   }

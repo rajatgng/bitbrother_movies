@@ -2,42 +2,47 @@ import React ,{Component} from 'react';
 import { View, Text, Image,StyleSheet,TextInput,TouchableOpacity,AsyncStorage } from 'react-native'
 import { Card, ListItem, Button, Icon } from 'react-native-elements'
 import { ScrollView } from 'react-native-gesture-handler';
+import {commentAdded,fetchComment,commentTextChanged} from '../src/actions/movies_action';
 import {LinearGradient} from 'expo';
 import firebase from 'firebase';
+import {connect} from 'react-redux';
 class MovieInfo extends Component{
-    componentWillMount = async ()=>{
-        this.movie = this.props.navigation.state.params.movie;
-        let token = await AsyncStorage.getItem('login_token')
-        await firebase.database().ref(`Users/${token}/movies/${this.movie.uid}/comments/`)
-       .on('value', snapshot => {
-        console.log(snapshot.val());
-
-       });
-    }
-    state = {
-        text: undefined,
+    componentWillMount(){
+        //console.log("-------------------------------")
+        const movieuid = this.props.navigation.state.params.movie.uid;
+      this.props.fetchComment(movieuid);
+      this.createDataSource(this.props.comment)
       };
+  
+      componentWillReceiveProps(nextProps){
+        //console.log("**********************")
+        this.createDataSource(nextProps);
+        //console.log(nextProps);
+      }
+  
+      createDataSource(props){
+       
+       console.log(props.comment);
+      }
     
      
-      onChangeText = (text) => this.setState({ text });
-      onSubmitEditing = ({ nativeEvent: { text } }) => this.setState({ text }, this.submit);
+      onChangeText = (text) => {
+          this.props.commentTextChanged(text);
+      }
+      onSubmitEditing = ({ nativeEvent: { text } }) => {
+        this.props.commentTextChanged(text);
+        this.submit;
+      };
     
       onSubmit = async(text) =>{
-        const {currentUser} = await firebase.auth();
-        const uuid = this.movie.uid;
-        await firebase.database().ref(`Users/${currentUser.uid}/movies/${uuid}/comments/`).push({
-           text
-            }).then((data)=>{
-            console.log("movie added successfully");
-            
-            }).catch((error)=>{
-                console.log('error ' , error)
-            })
+          const movieuid = this.props.navigation.state.params.movie.uid;
+         this.props.commentAdded({text,movieuid});
       }
       submit = () => {
-        const { text } = this.state;
-        if (text) {
-          this.setState({ text: undefined }, () => this.onSubmit(text));
+        const { commentText } = this.props;
+        if (commentText) {
+          this.props.commentTextChanged({commentText:undefined});
+          this.onSubmit(commentText);
         } else {
           alert('Please enter your comment first');
         }
@@ -60,21 +65,19 @@ class MovieInfo extends Component{
       }
     render(){
         return(
-           
             <View style={styles.container}>  
             <View styles = {{flex:1}}>
               <Card
-              title = {this.movie.name + "("+this.movie.year+")"}
+              title = {this.props.navigation.state.params.movie.name + "("+this.props.navigation.state.params.movie.year+")"}
                titleStyle={styles.titleStyle}
                image={require('../assets/mgmap.png')}>
              </Card>
              <View>
              <View style={styles.cmt_container}>
-        
           <TextInput
             placeholder="Add a comment..."
             style={styles.input}
-            value={this.state.text}
+            value={this.props.commentText}
             onChangeText={this.onChangeText} // handle input changes
             onSubmitEditing={this.onSubmitEditing} // handle submit event
           />
@@ -84,7 +87,7 @@ class MovieInfo extends Component{
             onPress={this.submit}
           >
             {/* Apply inactive style if no input */}
-            <Text style={[styles.text, !this.state.text ? styles.inactive : []]}>Post</Text>
+            <Text style={[styles.text, !this.props.commentText ? styles.inactive : []]}>Post</Text>
           </TouchableOpacity>
         </View>
            </View>
@@ -199,5 +202,10 @@ const styles = StyleSheet.create({
         color: '#BBB',
       },
   });
-
-export default MovieInfo;
+  const mapStateToProps = ({movie}) =>{
+    const { comment,commentText } = movie;
+   return {comment,commentText};
+ }
+export default connect(mapStateToProps,{
+fetchComment,commentTextChanged,commentAdded
+})(MovieInfo);
