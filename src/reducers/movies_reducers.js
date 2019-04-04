@@ -8,7 +8,8 @@ import {
     FETCH_MOVIES,
     FETCH_COMMENT,
     COMMENT_ADDED,
-    COMMENTTEXT_CHANGED
+    COMMENTTEXT_CHANGED,
+    FETCH_USERDATA
   } from '../actions/types';
 
   const INITIAL_STATE = {
@@ -21,7 +22,8 @@ import {
     image:'',
     movies:{},
     comment:{},
-    commentText:undefined
+    commentText:'',
+    user:{}
   };
   
   export default (state = INITIAL_STATE, action) => {
@@ -45,7 +47,9 @@ import {
       case COMMENT_ADDED:
         return { ...state,comment:state.comment }
       case FETCH_COMMENT:
-        return {...state, comment:action.payload}   
+        return {...state, comment:action.payload};
+      case FETCH_USERDATA:
+        return {...state,user:action.payload};   
       default:
         return state;
     }

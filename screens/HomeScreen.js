@@ -6,22 +6,19 @@ import {connect} from 'react-redux';
  import { Text, View, StyleSheet,ListView,ScrollView } from 'react-native';
  import {LinearGradient} from 'expo';
  import _ from 'lodash';
- import {fetchMovies} from '../src/actions/movies_action';
-
-
+ import {fetchMovies,fetchComment} from '../src/actions/movies_action';
 
   class HomeScreen extends Component{ 
 
     componentWillMount(){
-      //console.log("-------------------------------")
     this.props.fetchMovies();
     this.createDataSource(this.props.movies)
     };
 
     componentWillReceiveProps(nextProps){
-      //console.log("**********************")
+     
       this.createDataSource(nextProps);
-      //console.log(nextProps);
+     
     }
 
     createDataSource(props){
@@ -29,7 +26,7 @@ import {connect} from 'react-redux';
         return {...val,uid}
      });
      moviesdata.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)); 
-     //console.log(moviesdata);
+   
       const ds = new ListView.DataSource({
         rowHasChanged:(r1,r2) => r1!=r2
       });
@@ -58,26 +55,39 @@ import {connect} from 'react-redux';
        this.props.navigation.setParams({ signoutuser: this.signout_User });
  }
    btnAction =  (movie) =>{
-     
+   
     this.props.navigation.navigate('MovieInfo',{movie:movie});
    }
    renderRow = (movie) =>{
      return (<View style={styles.container}>  
         <View>
           <Card
-           title={movie.name}
+           title={`${movie.name}(${movie.year})`}
            titleStyle={styles.titleStyle}
            image={require('../assets/mgmap.png')}>
+           <View style = {{flexDirection:'row',justifyContent:'space-between',alignItems: 'flex-start',}}>
+
            <Text style={{marginBottom: 10,fontSize:20}}>
-          {movie.year}
+            {movie.genre}
            </Text>
+           <View style = {{flexDirection:'row'}}>
+           <Icon
+              name="thumbs-up"
+              color="#ccc"
+              type='font-awesome'
+              size={25}
+              onPress={()=>alert("hi")}
+            />
+            <Text style={{fontSize:20,marginLeft:2}}>0</Text>
+           </View>
           
+           </View>
            <Button
              onPress = {()=>{this.btnAction(movie)}}
              icon={<Icon name='code' color='#ffffff' />}
              backgroundColor='#03A9F4'
              buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
-             title='Accept' 
+             title='See Details' 
              />
          </Card>
        </View>
@@ -124,5 +134,5 @@ import {connect} from 'react-redux';
    return {movies}
  }
  export default connect(mapStateToProps, {
-   signoutUser,fetchMovies
+   signoutUser,fetchMovies,fetchComment
  })(HomeScreen);

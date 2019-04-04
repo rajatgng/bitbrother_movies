@@ -25,3 +25,4 @@ export const FETCH_MOVIES = 'fetch_movies';
 export const COMMENT_ADDED = 'comment_added';
 export const FETCH_COMMENT = 'fetch_comment';
 export const COMMENTTEXT_CHANGED = 'commenttext_changed';
+export const FETCH_USERDATA = 'fetch_userdata';

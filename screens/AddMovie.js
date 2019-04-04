@@ -1,5 +1,5 @@
 import React ,{Component} from 'react';
-import { View,StyleSheet,Text,ActivityIndicator} from 'react-native';
+import { View,StyleSheet,Text,Keyboard} from 'react-native';
 import {LinearGradient} from 'expo';
 import {Input,Button} from 'react-native-elements';
 import {connect} from 'react-redux';
@@ -7,6 +7,7 @@ import {movieAdded,movieNameChanged,movieYearChanged,movieGenreChanged,movieDesc
 class AddMovie extends Component{
 
     onButtonPress = () => {
+        Keyboard.dismiss();
         const {name,year,genre,desc,lang} = this.props
         this.props.movieAdded({name,year,genre,desc,lang});
         this.props.navigation.navigate('Home');

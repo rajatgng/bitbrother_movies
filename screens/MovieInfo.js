@@ -1,28 +1,31 @@
 import React ,{Component} from 'react';
-import { View, Text, Image,StyleSheet,TextInput,TouchableOpacity,AsyncStorage } from 'react-native'
+import { View, Text, Image,StyleSheet,TextInput,TouchableOpacity,ListView,Keyboard} from 'react-native'
 import { Card, ListItem, Button, Icon } from 'react-native-elements'
 import { ScrollView } from 'react-native-gesture-handler';
-import {commentAdded,fetchComment,commentTextChanged} from '../src/actions/movies_action';
+import {commentAdded,fetchComment,commentTextChanged,fetchUserData} from '../src/actions/movies_action';
 import {LinearGradient} from 'expo';
-import firebase from 'firebase';
+import _ from 'lodash';
 import {connect} from 'react-redux';
 class MovieInfo extends Component{
     componentWillMount(){
-        //console.log("-------------------------------")
-        const movieuid = this.props.navigation.state.params.movie.uid;
+      this.props.fetchUserData();
+      const movieuid = this.props.navigation.state.params.movie.uid;
       this.props.fetchComment(movieuid);
-      this.createDataSource(this.props.comment)
+      this.createDataSource(this.props)
       };
   
       componentWillReceiveProps(nextProps){
-        //console.log("**********************")
         this.createDataSource(nextProps);
-        //console.log(nextProps);
       }
   
       createDataSource(props){
-       
-       console.log(props.comment);
+        const commentdata = _.map(props.comment,(val,uid)=>{
+          return {...val,uid}
+       });
+        const ds = new ListView.DataSource({
+          rowHasChanged:(r1,r2) => r1!=r2
+        });
+        this.dataSource = ds.cloneWithRows(commentdata);
       }
     
      
@@ -35,13 +38,15 @@ class MovieInfo extends Component{
       };
     
       onSubmit = async(text) =>{
+        Keyboard.dismiss();
           const movieuid = this.props.navigation.state.params.movie.uid;
-         this.props.commentAdded({text,movieuid});
+          const username = this.props.user.name;
+         this.props.commentAdded({text,movieuid,username});
       }
       submit = () => {
         const { commentText } = this.props;
         if (commentText) {
-          this.props.commentTextChanged({commentText:undefined});
+          this.props.commentTextChanged('');
           this.onSubmit(commentText);
         } else {
           alert('Please enter your comment first');
@@ -63,6 +68,27 @@ class MovieInfo extends Component{
              //headerRight: <Button title='Log Out ' onPress={()=>{const p = navigation.getParam('signoutuser');p()}} />
         };
       }
+      renderRow = (comment) =>{
+        return(
+          <View style={styles.ccontainer}>
+          <View style={styles.avatarContainer}>
+             <Image
+              resizeMode='contain'
+              style={styles.avatar}
+              source={{ uri: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg' }}
+            />
+          </View>
+          <View style={styles.contentContainer}>
+            <Text>
+              <Text style={[styles.text, styles.name]}>{comment.username}</Text>
+              {' '}
+              <Text style={styles.text}>{comment.text}</Text>
+            </Text>
+            <Text style={[styles.text, styles.created]}>{comment.commentDate}</Text>
+          </View>
+        </View>
+        );
+      }
     render(){
         return(
             <View style={styles.container}>  
@@ -71,6 +97,7 @@ class MovieInfo extends Component{
               title = {this.props.navigation.state.params.movie.name + "("+this.props.navigation.state.params.movie.year+")"}
                titleStyle={styles.titleStyle}
                image={require('../assets/mgmap.png')}>
+               <Text>{this.props.navigation.state.params.movie.desc}</Text>
              </Card>
              <View>
              <View style={styles.cmt_container}>
@@ -93,28 +120,14 @@ class MovieInfo extends Component{
            </View>
            </View>
           
-           {/* <View style={styles.container}>
-        <ScrollView>
-          {comments.map((comment, index) => <Comment comment={comment} key={index} />)}
-        </ScrollView>
-      </View> */}
-           {/* <View style={styles.ccontainer}>
-        <View style={styles.avatarContainer}>
-          {avatar && <Image
-            resizeMode='contain'
-            style={styles.avatar}
-            source={{ uri: avatar }}
-          />}
-        </View>
-        <View style={styles.contentContainer}>
-          <Text>
-            <Text style={[styles.text, styles.name]}>rajat</Text>
-            {' '}
-            <Text style={styles.text}>{}</Text>
-          </Text>
-          <Text style={[styles.text, styles.created]}>6july</Text>
-        </View>
-      </View> */}
+           <View style={styles.container}>
+           <ListView
+        enableEmptySections
+        dataSource={this.dataSource}
+        renderRow={this.renderRow}
+        />
+      </View>
+         
          </View>
        
         );
@@ -136,7 +149,7 @@ const styles = StyleSheet.create({
       padding: 10,
     },
     titleStyle:{
-      fontSize:20,
+      fontSize:15,
       fontWeight: 'bold',
     },
     cmt_container: {
@@ -174,7 +187,7 @@ const styles = StyleSheet.create({
       avatarContainer: {
         alignItems: 'center',
         marginLeft: 5,
-        paddingTop: 10,
+        paddingTop: 2,
         width: 40,
       },
       contentContainer: {
@@ -203,9 +216,9 @@ const styles = StyleSheet.create({
       },
   });
   const mapStateToProps = ({movie}) =>{
-    const { comment,commentText } = movie;
-   return {comment,commentText};
+    const { comment,commentText,user } = movie;
+   return {comment,commentText,user};
  }
 export default connect(mapStateToProps,{
-fetchComment,commentTextChanged,commentAdded
+fetchComment,commentTextChanged,commentAdded,fetchUserData
 })(MovieInfo);

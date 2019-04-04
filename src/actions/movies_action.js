@@ -8,7 +8,8 @@ import {
     FETCH_MOVIES,
     COMMENT_ADDED,
     FETCH_COMMENT,
-    COMMENTTEXT_CHANGED
+    COMMENTTEXT_CHANGED,
+    FETCH_USERDATA
   } from './types';
   import firebase from 'firebase';
   import _ from 'lodash';
@@ -50,7 +51,7 @@ import {
 
     const { currentUser } = firebase.auth(); 
     const uuid = UUID();;
-    firebase.database().ref(`Users/${currentUser.uid}/movies/${uuid}/`).set({
+    firebase.database().ref(`movies/${uuid}/`).set({
         name,
         year,
         genre,
@@ -66,17 +67,31 @@ import {
 
   export const fetchMovies = () => async dispatch =>{
       let token = await AsyncStorage.getItem('login_token')
-        await firebase.database().ref(`Users/${token}/movies/`)
+        await firebase.database().ref(`/movies/`)
        .on('value', snapshot => {
         dispatch({type:FETCH_MOVIES, payload:snapshot.val()})
        });
       
   }
-  export const commentAdded = ({text,movieuid}) => async dispatch=>{
+  export const commentAdded = ({text,movieuid,username}) => async dispatch=>{
     const {currentUser} = await firebase.auth();
-    
-    await firebase.database().ref(`Users/${currentUser.uid}/movies/${movieuid}/comments/`).push({
-       text
+    const date = new Date();
+    var monthNames = [
+      "Jan", "Feb", "March",
+      "April", "May", "June", "July",
+      "Aug", "Sept", "Oct",
+      "Nov", "Dec"
+    ];
+    var day = date.getDate();
+    var monthIndex = date.getMonth();
+    var year = date.getFullYear();
+
+    var commentDate = day + ' ' + monthNames[monthIndex] + ' ' + year;
+
+    await firebase.database().ref(`/movies/${movieuid}/comments/`).push({
+       text,
+       commentDate,
+       username
         }).then((data)=>{
         console.log("movie added successfully");
         dispatch({type:COMMENT_ADDED});
@@ -86,8 +101,7 @@ import {
   }
 
   export const fetchComment =  (movieuid) => async dispatch=>{
-    let token = await AsyncStorage.getItem('login_token')
-        await firebase.database().ref(`Users/${token}/movies/${movieuid}/comments/`)
+        await firebase.database().ref(`movies/${movieuid}/comments/`)
        .on('value', snapshot => {
        dispatch({type:FETCH_COMMENT,payload:snapshot.val()})
        });
@@ -98,3 +112,13 @@ import {
       payload: text
     };
   }
+
+  export const fetchUserData = () => async dispatch=>{
+      let token = await AsyncStorage.getItem('login_token')
+        await firebase.database().ref(`Users/${token}/`)
+       .on('value', snapshot => {
+       dispatch({type:FETCH_USERDATA,payload:snapshot.val()})
+       });
+  }
+
+  
