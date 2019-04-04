@@ -3,10 +3,11 @@ import {Card ,Button,Icon,ListItem} from 'react-native-elements';
 import {connect} from 'react-redux';
  import React,{Component} from 'react';
  import {signoutUser} from '../src/actions/auth_action'
- import { Text, View, StyleSheet,ListView,ScrollView } from 'react-native';
+ import { Text, View, StyleSheet,ListView,ScrollView ,AsyncStorage} from 'react-native';
  import {LinearGradient} from 'expo';
  import _ from 'lodash';
- import {fetchMovies,fetchComment} from '../src/actions/movies_action';
+ import {fetchMovies,fetchComment,likesAdded} from '../src/actions/movies_action';
+
 
   class HomeScreen extends Component{ 
 
@@ -52,13 +53,51 @@ import {connect} from 'react-redux';
       this.props.navigation.navigate('Auth');
     }
     async  componentDidMount(){
+      // const login_token = await AsyncStorage.getItem('login_token');  
+      // console.log("in Homescreen"); 
+      // console.log(login_token);
        this.props.navigation.setParams({ signoutuser: this.signout_User });
  }
    btnAction =  (movie) =>{
    
     this.props.navigation.navigate('MovieInfo',{movie:movie});
    }
-   renderRow = (movie) =>{
+   likeAction = (movie) =>{
+     this.props.likesAdded(movie.uid);
+    var arr = _.values(movie.likes);
+   }
+  async matchUser(key){
+    let token = await AsyncStorage.getItem('login_token')
+     
+      if(key===token){
+       return true;
+      }
+      return false;
+   }
+   renderRow =   (movie) =>{
+     
+    var arr = _.values(movie.likes);
+    let hashMap = {}
+    for(var employee of arr){
+      if(employee.likeduser in hashMap ){
+      hashMap[employee.likeduser] = hashMap[employee.likeduser] + 1;  
+      }else{
+       hashMap[employee.likeduser] = 1;
+      }
+    }
+    
+   
+    let outputArray = []
+    let isCompleted=false
+    Object.keys(hashMap).forEach(key => {  
+      isCompleted=this.matchUser(key);
+      outputArray.push({
+        key,
+        count: hashMap[key]
+      })
+    })
+    //console.log(outputArray.length)
+
      return (<View style={styles.container}>  
         <View>
           <Card
@@ -73,12 +112,12 @@ import {connect} from 'react-redux';
            <View style = {{flexDirection:'row'}}>
            <Icon
               name="thumbs-up"
-              color="#ccc"
+              color={isCompleted ? '#DE5347' : '#ccc'}
               type='font-awesome'
               size={25}
-              onPress={()=>alert("hi")}
+              onPress={() => {this.likeAction(movie)}}
             />
-            <Text style={{fontSize:20,marginLeft:2}}>0</Text>
+            <Text style={{fontSize:20,marginLeft:2,paddingTop:2}}>{outputArray.length}</Text>
            </View>
           
            </View>
@@ -131,8 +170,8 @@ import {connect} from 'react-redux';
     // const moviesdata = _.map(movies,(val,uid)=>{
     //   return {...val,uid}
     // });
-   return {movies}
+   return {movies};
  }
  export default connect(mapStateToProps, {
-   signoutUser,fetchMovies,fetchComment
+   signoutUser,fetchMovies,fetchComment,likesAdded
  })(HomeScreen);

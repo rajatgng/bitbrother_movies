@@ -7,6 +7,7 @@ import { Input ,Button} from 'react-native-elements';
 import { StackActions, NavigationActions } from 'react-navigation';
 
 
+
 class AuthScreen extends Component {
   static navigationOptions={
     headerTitle:"Driver : Sign In",
@@ -20,7 +21,8 @@ class AuthScreen extends Component {
       ),
   }
 async componentDidMount(){
-        const login_token = await AsyncStorage.getItem('login_token');        
+        const login_token = await AsyncStorage.getItem('login_token');    
+        // console.log(login_token);    
         if(login_token){
         this.props.navigation.navigate('Home');
         }

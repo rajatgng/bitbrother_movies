@@ -9,7 +9,8 @@ import {
     COMMENT_ADDED,
     FETCH_COMMENT,
     COMMENTTEXT_CHANGED,
-    FETCH_USERDATA
+    FETCH_USERDATA,
+    MOVIE_LIKED
   } from './types';
   import firebase from 'firebase';
   import _ from 'lodash';
@@ -56,7 +57,8 @@ import {
         year,
         genre,
         desc,
-        lang
+        lang,
+
         }).then((data)=>{
         console.log("movie added successfully");
         dispatch({ type: MOVIE_ADDED });
@@ -121,4 +123,23 @@ import {
        });
   }
 
-  
+  export const likesAdded =  (movieuid) =>  async dispatch => {
+
+    let likeduser = await AsyncStorage.getItem('login_token');
+   
+    firebase.database().ref(`movies/${movieuid}/likes`).push({
+       likeduser
+        }).then((data)=>{
+        
+        dispatch({ type: MOVIE_LIKED});
+        }).catch((error)=>{
+            console.log('error ' , error)
+        })
+  };
+
+//   export const fetchLikes = () => async dispatch =>{
+//       await firebase.database().ref(`movies/`)
+//      .on('value', snapshot => {
+//      dispatch({type:FETCH_LIKES,payload:snapshot.val()})
+//      });
+// }
