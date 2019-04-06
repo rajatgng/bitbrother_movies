@@ -75,7 +75,7 @@ import {
        });
       
   }
-  export const commentAdded = ({text,movieuid,username}) => async dispatch=>{
+  export const commentAdded = ({text,movieuid,username,type}) => async dispatch=>{
     const {currentUser} = await firebase.auth();
     const date = new Date();
     var monthNames = [
@@ -93,7 +93,8 @@ import {
     await firebase.database().ref(`/movies/${movieuid}/comments/`).push({
        text,
        commentDate,
-       username
+       username,
+       type
         }).then((data)=>{
         console.log("movie added successfully");
         dispatch({type:COMMENT_ADDED});

@@ -3,7 +3,7 @@ import {Card ,Button,Icon,ListItem} from 'react-native-elements';
 import {connect} from 'react-redux';
  import React,{Component} from 'react';
  import {signoutUser} from '../src/actions/auth_action'
- import { Text, View, StyleSheet,ListView,ScrollView ,AsyncStorage} from 'react-native';
+ import { Text, View, StyleSheet,ListView,TouchableOpacity ,AsyncStorage} from 'react-native';
  import {LinearGradient} from 'expo';
  import _ from 'lodash';
  import {fetchMovies,fetchComment,likesAdded} from '../src/actions/movies_action';
@@ -45,7 +45,14 @@ import {connect} from 'react-redux';
             end={[1, 0]}
           />
         ),
-          headerRight: <Button title='Log Out ' onPress={()=>{const p = navigation.getParam('signoutuser');p()}} />
+          headerRight: //<Button title='Log Out ' onPress={()=>{const p = navigation.getParam('signoutuser');p()}} />
+          <TouchableOpacity
+          style={styles.button}
+          onPress={()=>{const p = navigation.getParam('signoutuser');p()}}
+        >
+          {/* Apply inactive style if no input */}
+          <Text style={styles.text}>Log out</Text>
+        </TouchableOpacity>
      };
    }
     signout_User = ()=>{
@@ -98,12 +105,16 @@ import {connect} from 'react-redux';
     })
     //console.log(outputArray.length)
 
-     return (<View style={styles.container}>  
+     return (
+      
+     <View style={styles.container}>  
+     
         <View>
           <Card
            title={`${movie.name}(${movie.year})`}
            titleStyle={styles.titleStyle}
-           image={require('../assets/mgmap.png')}>
+           image={require('../assets/movie.jpg')}
+           containerStyle={{backgroundColor:'#f6f7f4'}}>
            <View style = {{flexDirection:'row',justifyContent:'space-between',alignItems: 'flex-start',}}>
 
            <Text style={{marginBottom: 10,fontSize:20}}>
@@ -130,24 +141,32 @@ import {connect} from 'react-redux';
              />
          </Card>
        </View>
-     </View>);
+     
+     </View>
+     );
    }
     render(){
       return(
-    
+        <LinearGradient
+        colors={['#5ED2A0', '#339CB1']}
+        style={{ flex: 1 }}
+        start={[0, 0]}
+        end={[1, 0]}
+      >
         <ListView
         enableEmptySections
         dataSource={this.dataSource}
         renderRow={this.renderRow}
         />
+        </LinearGradient>
       );
   }
  }
  const styles = StyleSheet.create({
    container:{
      flex: 1,
-   backgroundColor: '#fff',
-   marginBottom:5
+   //backgroundColor: 'linear-gradient(-225deg, #231557 0%, #44107A 29%, #FF1361 67%, #FFF800 100%)',
+   marginBottom:1
    },
    viewStyle: {
      justifyContent: 'center',
@@ -161,7 +180,21 @@ import {connect} from 'react-redux';
    titleStyle:{
      fontSize:20,
      fontWeight: 'bold',
-   }
+   },
+   button: {
+    height: 40,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  
+  text: {
+    color: '#3F51B5',
+    fontWeight: 'bold',
+   
+    textAlign: 'center',
+    fontSize: 20,
+  },
    
  });
  

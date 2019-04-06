@@ -40,12 +40,23 @@ const MainScreen = createBottomTabNavigator(
         tabBarLabel:"ADD MOVIE",
         tabBarIcon: ({focused}) => (
           <Ionicons
-              name={"ios-cloud"}
+              name={"md-add"}
               size={focused?35:30}
               style={{ color: focused ? '#33A3F4' : '#949494'}}
           />
       ),
+      
       }
+    },
+  },
+  {
+    tabBarOptions: {
+      activeTintColor: 'tomato',
+      inactiveTintColor: 'gray',
+      style: {
+        backgroundColor:  '#f1f7ed',height:50
+      },
+      
     },
   }
   );

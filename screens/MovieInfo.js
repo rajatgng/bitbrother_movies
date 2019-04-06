@@ -1,11 +1,12 @@
 import React ,{Component} from 'react';
-import { View, Text, Image,StyleSheet,TextInput,TouchableOpacity,ListView,Keyboard} from 'react-native'
-import { Card, ListItem, Button, Icon } from 'react-native-elements'
-import { ScrollView } from 'react-native-gesture-handler';
+import { View, Text, Image,StyleSheet,TextInput,TouchableOpacity,ListView,Keyboard,Dimensions} from 'react-native'
+import { Card} from 'react-native-elements'
+
 import {commentAdded,fetchComment,commentTextChanged,fetchUserData} from '../src/actions/movies_action';
-import {LinearGradient} from 'expo';
+import {LinearGradient,ImagePicker} from 'expo';
 import _ from 'lodash';
 import {connect} from 'react-redux';
+import {data }from './img';
 class MovieInfo extends Component{
     componentWillMount(){
       this.props.fetchUserData();
@@ -17,7 +18,9 @@ class MovieInfo extends Component{
       componentWillReceiveProps(nextProps){
         this.createDataSource(nextProps);
       }
-  
+      async  componentDidMount(){
+        this.props.navigation.setParams({ imageAdder: this.imageAdder });
+      }
       createDataSource(props){
         const commentdata = _.map(props.comment,(val,uid)=>{
           return {...val,uid}
@@ -27,7 +30,29 @@ class MovieInfo extends Component{
         });
         this.dataSource = ds.cloneWithRows(commentdata);
       }
-    
+    imageAdder = async ()=>{
+      let result = await ImagePicker.launchImageLibraryAsync({
+              allowsEditing: true,
+              aspect: [4, 3],
+              base64:true
+            });
+            const movieuid = this.props.navigation.state.params.movie.uid;
+            const username = this.props.user.name;
+            const type = 'image';
+            const text = result.base64;
+           this.props.commentAdded({text,movieuid,username,type});
+            //console.log(result);
+            // if (!result.cancelled) {
+               //this.uploadImage(result.base64, "profile_pic")
+
+            //     .then(() => {
+            //       Alert.alert("Image Succesfully changed");
+            //     })
+            //     .catch((error) => {
+            //       Alert.alert(error);
+            //     });
+            // }
+    }
      
       onChangeText = (text) => {
           this.props.commentTextChanged(text);
@@ -41,7 +66,8 @@ class MovieInfo extends Component{
         Keyboard.dismiss();
           const movieuid = this.props.navigation.state.params.movie.uid;
           const username = this.props.user.name;
-         this.props.commentAdded({text,movieuid,username});
+          const type = 'text';
+         this.props.commentAdded({text,movieuid,username,type});
       }
       submit = () => {
         const { commentText } = this.props;
@@ -65,10 +91,19 @@ class MovieInfo extends Component{
                end={[1, 0]}
              />
            ),
-             //headerRight: <Button title='Log Out ' onPress={()=>{const p = navigation.getParam('signoutuser');p()}} />
+           headerRight: //<Button title='' onPress={()=>{const p = navigation.getParam('signoutuser');p()}} />
+           <TouchableOpacity
+           style={styles.button}
+           onPress={()=>{const p = navigation.getParam('imageAdder');p()} }
+         >
+           {/* Apply inactive style if no input */}
+           <Text style={styles.text}>Post Image</Text>
+         </TouchableOpacity>
+
         };
       }
       renderRow = (comment) =>{
+        if(comment.type==='image'){
         return(
           <View style={styles.ccontainer}>
           <View style={styles.avatarContainer}>
@@ -79,28 +114,56 @@ class MovieInfo extends Component{
             />
           </View>
           <View style={styles.contentContainer}>
-            <Text>
+           
               <Text style={[styles.text, styles.name]}>{comment.username}</Text>
-              {' '}
-              <Text style={styles.text}>{comment.text}</Text>
-            </Text>
-            <Text style={[styles.text, styles.created]}>{comment.commentDate}</Text>
+              <Image
+              resizeMode='cover'
+              style={styles.avatar2}
+              source = {{uri: `data:image/jpeg;base64,${comment.text}`}}
+              />
+           
+            <Text style={[styles.text, styles.created]}>{comment.commentDate}</Text> 
+           
           </View>
         </View>
         );
+          }
+         else if(comment.type==='text'){
+          return(
+            <View style={styles.ccontainer}>
+            <View style={styles.avatarContainer}>
+               <Image
+                resizeMode='contain'
+                style={styles.avatar}
+                source={{ uri: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg' }}
+              />
+            </View>
+            <View style={styles.contentContainer}>
+              <Text>
+                <Text style={[styles.text, styles.name]}>{comment.username}</Text>
+                {' '}
+                <Text style={styles.text}>{comment.text}</Text>
+              </Text>
+              <Text style={[styles.text, styles.created]}>{comment.commentDate}</Text>
+            </View>
+          </View>
+          );
+         } 
       }
     render(){
+     
         return(
             <View style={styles.container}>  
             <View styles = {{flex:1}}>
               <Card
               title = {this.props.navigation.state.params.movie.name + "("+this.props.navigation.state.params.movie.year+")"}
                titleStyle={styles.titleStyle}
-               image={require('../assets/mgmap.png')}>
+               image={require("../assets/movie.jpg")}>
                <Text>{this.props.navigation.state.params.movie.desc}</Text>
              </Card>
-             <View>
-             <View style={styles.cmt_container}>
+          <View>
+          <View style={styles.cmt_container}>
+         
           <TextInput
             placeholder="Add a comment..."
             style={styles.input}
@@ -114,7 +177,7 @@ class MovieInfo extends Component{
             onPress={this.submit}
           >
             {/* Apply inactive style if no input */}
-            <Text style={[styles.text, !this.props.commentText ? styles.inactive : []]}>Post</Text>
+            <Text style={[styles.btext, !this.props.commentText ? styles.inactive : []]}>Post</Text>
           </TouchableOpacity>
         </View>
            </View>
@@ -171,10 +234,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
       },
+      imagebutton: {
+        height: 40,
+        paddingHorizontal: 2,
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
       inactive: {
         color: '#CCC',
       },
-      text: {
+      btext: {
         color: '#3F51B5',
         fontWeight: 'bold',
        
@@ -202,6 +271,13 @@ const styles = StyleSheet.create({
         borderRadius: 13,
         width: 26,
         height: 26,
+      },
+      avatar2: {
+        borderWidth: 1,
+        borderColor: '#EEE',
+        borderRadius: 13,
+        width: Dimensions.get('window').width-100,
+        height: Dimensions.get('window').height-400,
       },
       text: {
         color: '#000',
