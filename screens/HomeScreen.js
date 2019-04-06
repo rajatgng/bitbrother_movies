@@ -35,7 +35,7 @@ import {connect} from 'react-redux';
     }
    static navigationOptions = ({navigation,state }) => {
      return{
-      headerTitle:"Let's Ride",
+      headerTitle:"Movies",
       headerStyle: {height: 40},
       headerBackground: (
           <LinearGradient
@@ -70,8 +70,30 @@ import {connect} from 'react-redux';
     this.props.navigation.navigate('MovieInfo',{movie:movie});
    }
    likeAction = (movie) =>{
-     this.props.likesAdded(movie.uid);
+   
     var arr = _.values(movie.likes);
+    let hashMap = {}
+    for(var employee of arr){
+      if(employee.likeduser in hashMap ){
+      hashMap[employee.likeduser] = hashMap[employee.likeduser] + 1;  
+      }else{
+       hashMap[employee.likeduser] = 1;
+      }
+    }
+    
+   
+    let outputArray = []
+    let isCompleted=false
+    Object.keys(hashMap).forEach(key => {  
+      isCompleted=this.matchUser(key);
+      outputArray.push({
+        key,
+        count: hashMap[key]
+      })
+    })
+    if(isCompleted===false){
+      this.props.likesAdded(movie.uid);
+    }
    }
   async matchUser(key){
     let token = await AsyncStorage.getItem('login_token')
@@ -115,6 +137,7 @@ import {connect} from 'react-redux';
            titleStyle={styles.titleStyle}
            image={require('../assets/movie.jpg')}
            containerStyle={{backgroundColor:'#f6f7f4'}}>
+          
            <View style = {{flexDirection:'row',justifyContent:'space-between',alignItems: 'flex-start',}}>
 
            <Text style={{marginBottom: 10,fontSize:20}}>
@@ -139,6 +162,7 @@ import {connect} from 'react-redux';
              buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
              title='See Details' 
              />
+          
          </Card>
        </View>
      

@@ -44,7 +44,7 @@ class AddMovie extends Component{
                 placeholderTextColor='gray'
                 onChangeText={this.onNameChange}
                 value={this.props.name}
-                leftIcon={{ type: 'material', name: 'person' }}
+                leftIcon={{ type: 'material', name: 'movie' }}
                 />
                  <Input
                 containerStyle={styles.comp}
@@ -54,7 +54,7 @@ class AddMovie extends Component{
                 placeholderTextColor='gray'
                 onChangeText={this.onYearChange}
                 value={this.props.year}
-                leftIcon={{ type: 'material', name: 'email' }}
+                leftIcon={{ type: 'font-awesome', name: 'calendar' }}
                 />
                 <Input
                 containerStyle={styles.comp}
@@ -64,7 +64,7 @@ class AddMovie extends Component{
                 placeholderTextColor='gray'
                 onChangeText={this.onGenreChange}
                 value={this.props.genre}
-                leftIcon={{ type: 'material', name: 'phone' }}
+                leftIcon={{ type: 'material', name: 'theaters' }}
                 />
                 <Input
                 containerStyle={styles.comp}
@@ -74,7 +74,7 @@ class AddMovie extends Component{
                 placeholder='Description'
                 onChangeText={this.onDescChange}
                 value={this.props.desc}
-                leftIcon={{ type: 'material', name: 'lock' }}
+                leftIcon={{ type: 'material', name: 'description' }}
                 />
                  <Input
                 containerStyle={styles.comp}
@@ -84,7 +84,7 @@ class AddMovie extends Component{
                 placeholder='Language'
                 onChangeText={this.onLangChange}
                 value={this.props.lang}
-                leftIcon={{ type: 'material', name: 'lock' }}
+                leftIcon={{ type: 'material', name: 'language' }}
                 />
                 <Text style={{ color:'red',padding:10}}>
                 {this.props.error}
@@ -134,7 +134,8 @@ const styles = StyleSheet.create({
         borderRadius:50,
     },
     btn3:{
-        fontSize:20
+        fontSize:20,
+        
     },
     
 });

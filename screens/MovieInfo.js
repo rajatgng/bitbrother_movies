@@ -6,7 +6,7 @@ import {commentAdded,fetchComment,commentTextChanged,fetchUserData} from '../src
 import {LinearGradient,ImagePicker} from 'expo';
 import _ from 'lodash';
 import {connect} from 'react-redux';
-import {data }from './img';
+
 class MovieInfo extends Component{
     componentWillMount(){
       this.props.fetchUserData();
