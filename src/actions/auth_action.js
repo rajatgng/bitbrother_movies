@@ -116,25 +116,30 @@ dispatch({
 
 };
 
+export const signoutUser = () => async dispatch=>{
+  try {
+    await firebase.auth().signOut();
+    await removeData();
+    console.log("SignOut Success");
+    dispatch({ type: SIGNOUT_USER });
+  }
+  catch(err) {
+    console.log(err);
+  }
+  // await firebase.auth().signOut()
 
-export const signoutUser =  () => {
-  return (dispatch) => {
-    // const {currentUser} = firebase.auth();
-    firebase.auth().signOut().
-    
-    then(async ()=>{
-     await removeData();
-  console.log("signout suucess");
-  dispatch({ type: SIGNOUT_USER });
-    }).
-    catch((error)=>{
-      console.log(error);
-       
-    });
-  };
-};
+  // .then(async ()=>{
+  //   await removeData();
+  //   console.log("SignOut Success");
+  //   dispatch({ type: SIGNOUT_USER });
+  // })
+  // .catch((error)=>{ console.log(error);});
+}
+
+
 removeData = async () => {
   try{
+    console.log('gfgfghvjhg')
   await AsyncStorage.removeItem('login_token');
   }
   catch(error){

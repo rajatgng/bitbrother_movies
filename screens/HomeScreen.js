@@ -10,27 +10,43 @@ import {connect} from 'react-redux';
 import firebase from 'firebase';
   class HomeScreen extends Component{ 
 
-    constructor(props) {
-      super(props);
-      
-      this.state = {
-        token:''
-      };
-    }
-      componentWillMount(){
-      
-    this.props.fetchMovies();
-   
-    this.createDataSource(this.props.movies)
+    
+    componentWillMount(){  
+      this.props.fetchMovies();
+      this.createDataSource(this.props.movies)
     };
 
     componentWillReceiveProps(nextProps){
-     
-      this.createDataSource(nextProps);
-     
+      this.createDataSource(nextProps); 
     }
    
+    async  componentDidMount(){
 
+    this.props.navigation.setParams({ signoutuser: this.signout_User });
+    }
+
+    static navigationOptions = ({navigation,state }) => {
+      return{
+       headerTitle:"Movies",
+       headerStyle: {height: 40},
+       headerBackground: (
+           <LinearGradient
+             colors={['#5ED2A0', '#339CB1']}
+             style={{ flex: 1 }}
+             start={[0, 0]}
+             end={[1, 0]}
+           />
+         ),
+           headerRight: //<Button title='Log Out ' onPress={()=>{const p = navigation.getParam('signoutuser');p()}} />
+           <TouchableOpacity
+           style={styles.button}
+           onPress={()=>{const p = navigation.getParam('signoutuser');p()}}
+         >
+           {/* Apply inactive style if no input */}
+           <Text style={styles.text}>Log out</Text>
+         </TouchableOpacity>
+      };
+    }
     createDataSource(props){
       const moviesdata = _.map(props.movies,(val,uid)=>{
         return {...val,uid}
@@ -42,35 +58,11 @@ import firebase from 'firebase';
       });
       this.dataSource = ds.cloneWithRows(moviesdata)
     }
-   static navigationOptions = ({navigation,state }) => {
-     return{
-      headerTitle:"Movies",
-      headerStyle: {height: 40},
-      headerBackground: (
-          <LinearGradient
-            colors={['#5ED2A0', '#339CB1']}
-            style={{ flex: 1 }}
-            start={[0, 0]}
-            end={[1, 0]}
-          />
-        ),
-          headerRight: //<Button title='Log Out ' onPress={()=>{const p = navigation.getParam('signoutuser');p()}} />
-          <TouchableOpacity
-          style={styles.button}
-          onPress={()=>{const p = navigation.getParam('signoutuser');p()}}
-        >
-          {/* Apply inactive style if no input */}
-          <Text style={styles.text}>Log out</Text>
-        </TouchableOpacity>
-     };
-   }
-    signout_User = ()=>{
-      this.props.signoutUser();
+  
+    signout_User = async ()=>{
+      await this.props.signoutUser();
       this.props.navigation.navigate('Auth');
     }
-    async  componentDidMount(){
-       this.props.navigation.setParams({ signoutuser: this.signout_User });
- }
    btnAction =  (movie) =>{
    
     this.props.navigation.navigate('MovieInfo',{movie:movie});

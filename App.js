@@ -3,7 +3,9 @@ import { Provider } from "react-redux";
 import {LinearGradient} from 'expo';
 import store from './src/store';
 import { StyleSheet, Text, View } from 'react-native';
-import {createAppContainer,createSwitchNavigator,createStackNavigator,createBottomTabNavigator} from 'react-navigation';
+import {createAppContainer,createSwitchNavigator,
+  createStackNavigator,TabBarBottom,
+  createBottomTabNavigator} from 'react-navigation';
 import AuthScreen from './screens/AuthScreen';
 import HomeScreen from './screens/HomeScreen';
 import SignUpScreen from './screens/SignUpScreen';
@@ -12,6 +14,7 @@ import MovieInfo from './screens/MovieInfo';
 import {firebaseConfig }from './Secret';
 import firebase from 'firebase';
 import { Ionicons } from '@expo/vector-icons';
+import {Icon} from 'react-native-elements';
 const AuthStack = createStackNavigator({
   Auth:AuthScreen,
   SignUp:SignUpScreen
@@ -40,12 +43,12 @@ const MainScreen = createBottomTabNavigator(
         tabBarLabel:"ADD MOVIE",
         tabBarIcon: ({focused}) => (
           <Ionicons
-              name={"md-add"}
+              name={"md-add-circle"}
               size={focused?35:30}
               style={{ color: focused ? '#33A3F4' : '#949494'}}
           />
-      ),
-      
+       
+       ), 
       }
     },
   },
@@ -54,10 +57,19 @@ const MainScreen = createBottomTabNavigator(
       activeTintColor: 'tomato',
       inactiveTintColor: 'gray',
       style: {
-        backgroundColor:  '#f1f7ed',height:50
+        backgroundColor:   (
+          <LinearGradient
+            colors={['#5ED2A0', '#339CB1']}
+            style={{ flex: 1 }}
+            start={[0, 0]}
+            end={[1, 0]}
+          />
+        ),
       },
-      
     },
+    lazy: true,
+    swipeEnabled: true,
+    animationEnabled: true,
   }
   );
   

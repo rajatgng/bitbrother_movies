@@ -29,17 +29,13 @@ class AddMovie extends Component{
     }
     render(){
         return(
-
-            <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-
-
-            <LinearGradient 
-        style={{flex:1}} 
-        locations={[0, 1.0]} 
-        colors={['#5ED2A0', '#339CB1']}
-        >
-        <View style={styles.container}>
-            <View style={styles.insidecontainer}>
+    <LinearGradient 
+    style={{flex:1}} 
+    locations={[0, 1.0]} 
+    colors={['#5ED2A0', '#339CB1']}
+    >
+        <KeyboardAvoidingView style={styles.container} behavior='padding' enabled>
+            {/* <View style={styles.insidecontainer}> */}
                 <Input
                 containerStyle={styles.comp}
                 inputStyle={styles.comp2}
@@ -70,6 +66,7 @@ class AddMovie extends Component{
                 value={this.props.genre}
                 leftIcon={{ type: 'material', name: 'theaters' }}
                 />
+               
                 <Input
                 containerStyle={styles.comp}
                 inputStyle={styles.comp2}
@@ -95,17 +92,15 @@ class AddMovie extends Component{
                 </Text> 
                {/* {this.renderButton()} */}
                <Button
-            containerStyle={styles.btn}
-            buttonStyle={styles.btn2}
-            titleStyle={styles.btn3}
-            title="Add Movie"
-            onPress={this.onButtonPress}
-            />
-            </View>
-            
-        </View>
-        </LinearGradient>
+                containerStyle={styles.btn}
+                buttonStyle={styles.btn2}
+                titleStyle={styles.btn3}
+                title="Add Movie"
+                onPress={this.onButtonPress}
+                /> 
+            {/* </View> */}
         </KeyboardAvoidingView>
+    </LinearGradient>
         );
     }
 }
@@ -124,7 +119,7 @@ const styles = StyleSheet.create({
         width:'100%',padding:10
     },
     comp:{
-        width:'100%',padding: 10,marginBottom: 15
+        width:'100%',padding: 5,marginBottom: 2
     },
     comp2:{
         fontSize:20,paddingLeft: 10

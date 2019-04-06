@@ -20,9 +20,9 @@ class AuthScreen extends Component {
         />
       ),
   }
-async componentDidMount(){
+    async componentWillMount(){
         const login_token = await AsyncStorage.getItem('login_token');    
-        // console.log(login_token);    
+        console.log(login_token);    
         if(login_token){
         this.props.navigation.navigate('Home');
         }
