@@ -30,7 +30,7 @@ const MainScreen = createBottomTabNavigator(
     Home : {
       screen : HomeStack,
       navigationOptions: {
-        tabBarLabel:"MY MOVIES",
+        tabBarLabel:"MOVIES",
         tabBarIcon: ({focused}) => (
           <Ionicons
               name={focused ? 'ios-home' : 'md-home'}

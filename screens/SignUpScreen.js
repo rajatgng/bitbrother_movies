@@ -8,7 +8,7 @@ import {LinearGradient} from 'expo';
 class SignUpScreen extends Component {
 static navigationOptions = {
     
-       title:'Driver : Sign Up',
+       title:'Sign Up',
        headerBackground: (
         <LinearGradient
           colors={['#5ED2A0', '#339CB1']}

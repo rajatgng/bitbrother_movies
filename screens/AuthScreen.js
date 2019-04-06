@@ -10,7 +10,7 @@ import { StackActions, NavigationActions } from 'react-navigation';
 
 class AuthScreen extends Component {
   static navigationOptions={
-    headerTitle:"Driver : Sign In",
+    headerTitle:"Sign In",
     headerBackground: (
         <LinearGradient
           colors={['#5ED2A0', '#339CB1']}
