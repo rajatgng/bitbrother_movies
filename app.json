@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "bbmovies",
+    "name": "BBMovies",
     "slug": "bbmovies",
     "privacy": "public",
     "sdkVersion": "32.0.0",
@@ -10,7 +10,7 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/clapperboard.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
