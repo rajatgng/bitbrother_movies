@@ -41,17 +41,6 @@ class MovieInfo extends Component{
             const type = 'image';
             const text = result.base64;
            this.props.commentAdded({text,movieuid,username,type});
-            //console.log(result);
-            // if (!result.cancelled) {
-               //this.uploadImage(result.base64, "profile_pic")
-
-            //     .then(() => {
-            //       Alert.alert("Image Succesfully changed");
-            //     })
-            //     .catch((error) => {
-            //       Alert.alert(error);
-            //     });
-            // }
     }
      
       onChangeText = (text) => {

@@ -3,11 +3,19 @@ import {Card ,Button,Icon,ListItem} from 'react-native-elements';
 import {connect} from 'react-redux';
  import React,{Component} from 'react';
  import {signoutUser} from '../src/actions/auth_action'
- import { Text, View, StyleSheet,ListView,TouchableOpacity ,AsyncStorage} from 'react-native';
+ import { Text, View, StyleSheet,ListView,TouchableOpacity ,AsyncStorage,YellowBox} from 'react-native';
  import {LinearGradient} from 'expo';
  import _ from 'lodash';
  import {fetchMovies,fetchComment,likesAdded} from '../src/actions/movies_action';
 import firebase from 'firebase';
+
+YellowBox.ignoreWarnings(['Setting a timer']);
+const _console = _.clone(console);
+console.warn = message => {
+  if (message.indexOf('Setting a timer') <= -1) {
+    _console.warn(message);
+  }
+};
   class HomeScreen extends Component{ 
 
     

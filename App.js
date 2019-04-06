@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from "react-redux";
 import {LinearGradient} from 'expo';
 import store from './src/store';
-import { StyleSheet, Text, View } from 'react-native';
+
 import {createAppContainer,createSwitchNavigator,
   createStackNavigator,TabBarBottom,
   createBottomTabNavigator} from 'react-navigation';
@@ -15,6 +15,8 @@ import {firebaseConfig }from './Secret';
 import firebase from 'firebase';
 import { Ionicons } from '@expo/vector-icons';
 import {Icon} from 'react-native-elements';
+
+
 const AuthStack = createStackNavigator({
   Auth:AuthScreen,
   SignUp:SignUpScreen
@@ -57,14 +59,7 @@ const MainScreen = createBottomTabNavigator(
       activeTintColor: 'tomato',
       inactiveTintColor: 'gray',
       style: {
-        backgroundColor:   (
-          <LinearGradient
-            colors={['#5ED2A0', '#339CB1']}
-            style={{ flex: 1 }}
-            start={[0, 0]}
-            end={[1, 0]}
-          />
-        ),
+        backgroundColor:  '#f1f7ed',height:50,
       },
     },
     lazy: true,
@@ -107,11 +102,3 @@ export default class App extends React.Component {
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
