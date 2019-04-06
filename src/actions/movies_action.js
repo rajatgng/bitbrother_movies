@@ -117,7 +117,9 @@ import {
   }
 
   export const fetchUserData = () => async dispatch=>{
-      let token = await AsyncStorage.getItem('login_token')
+      //let token = await AsyncStorage.getItem('login_token')
+      const {currentUser} = firebase.auth();
+      let token = currentUser.uid;
         await firebase.database().ref(`Users/${token}/`)
        .on('value', snapshot => {
        dispatch({type:FETCH_USERDATA,payload:snapshot.val()})

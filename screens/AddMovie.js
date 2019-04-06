@@ -1,5 +1,5 @@
 import React ,{Component} from 'react';
-import { View,StyleSheet,Text,Keyboard} from 'react-native';
+import { View,StyleSheet,Text,Keyboard,KeyboardAvoidingView} from 'react-native';
 import {LinearGradient} from 'expo';
 import {Input,Button} from 'react-native-elements';
 import {connect} from 'react-redux';
@@ -29,6 +29,10 @@ class AddMovie extends Component{
     }
     render(){
         return(
+
+            <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+
+
             <LinearGradient 
         style={{flex:1}} 
         locations={[0, 1.0]} 
@@ -101,6 +105,7 @@ class AddMovie extends Component{
             
         </View>
         </LinearGradient>
+        </KeyboardAvoidingView>
         );
     }
 }

@@ -7,12 +7,20 @@ import {connect} from 'react-redux';
  import {LinearGradient} from 'expo';
  import _ from 'lodash';
  import {fetchMovies,fetchComment,likesAdded} from '../src/actions/movies_action';
-
-
+import firebase from 'firebase';
   class HomeScreen extends Component{ 
 
-    componentWillMount(){
+    constructor(props) {
+      super(props);
+      
+      this.state = {
+        token:''
+      };
+    }
+      componentWillMount(){
+      
     this.props.fetchMovies();
+   
     this.createDataSource(this.props.movies)
     };
 
@@ -21,6 +29,7 @@ import {connect} from 'react-redux';
       this.createDataSource(nextProps);
      
     }
+   
 
     createDataSource(props){
       const moviesdata = _.map(props.movies,(val,uid)=>{
@@ -60,9 +69,6 @@ import {connect} from 'react-redux';
       this.props.navigation.navigate('Auth');
     }
     async  componentDidMount(){
-      // const login_token = await AsyncStorage.getItem('login_token');  
-      // console.log("in Homescreen"); 
-      // console.log(login_token);
        this.props.navigation.setParams({ signoutuser: this.signout_User });
  }
    btnAction =  (movie) =>{
@@ -84,27 +90,26 @@ import {connect} from 'react-redux';
    
     let outputArray = []
     let isCompleted=false
-    Object.keys(hashMap).forEach(key => {  
+    Object.keys(hashMap).forEach((key) => {  
       isCompleted=this.matchUser(key);
       outputArray.push({
         key,
         count: hashMap[key]
       })
     })
+  
     if(isCompleted===false){
-      this.props.likesAdded(movie.uid);
+        this.props.likesAdded(movie.uid);
     }
    }
-  async matchUser(key){
-    let token = await AsyncStorage.getItem('login_token')
-     
-      if(key===token){
+  matchUser = (key) =>{
+    const {currentUser} = firebase.auth();
+      if(key===currentUser.uid){
        return true;
       }
       return false;
    }
-   renderRow =   (movie) =>{
-     
+   renderRow =  (movie) =>{
     var arr = _.values(movie.likes);
     let hashMap = {}
     for(var employee of arr){
@@ -115,17 +120,15 @@ import {connect} from 'react-redux';
       }
     }
     
-   
     let outputArray = []
     let isCompleted=false
-    Object.keys(hashMap).forEach(key => {  
+    Object.keys(hashMap).forEach((key) => {  
       isCompleted=this.matchUser(key);
       outputArray.push({
         key,
         count: hashMap[key]
       })
     })
-    //console.log(outputArray.length)
 
      return (
       
@@ -223,12 +226,9 @@ import {connect} from 'react-redux';
  });
  
  const mapStateToProps = ({movie}) =>{
-    const { movies } = movie;
-    // const moviesdata = _.map(movies,(val,uid)=>{
-    //   return {...val,uid}
-    // });
-   return {movies};
+    const { movies ,user} = movie;
+   return {movies,user};
  }
  export default connect(mapStateToProps, {
-   signoutUser,fetchMovies,fetchComment,likesAdded
+   signoutUser,fetchMovies,fetchComment,likesAdded,
  })(HomeScreen);
