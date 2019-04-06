@@ -9,7 +9,7 @@ import HomeScreen from './screens/HomeScreen';
 import SignUpScreen from './screens/SignUpScreen';
 import AddMovie from './screens/AddMovie';
 import MovieInfo from './screens/MovieInfo';
-//import config from './src/Secret';
+import {firebaseConfig }from './Secret';
 import firebase from 'firebase';
 import { Ionicons } from '@expo/vector-icons';
 const AuthStack = createStackNavigator({
@@ -82,16 +82,8 @@ const AppContainer = createAppContainer(createSwitchNavigator(
 
 export default class App extends React.Component {
   componentWillMount(){
-    var config = {
-      apiKey: "AIzaSyBTcH3cSf3NJ6BzVV73A4W8GgI06lCL22s",
-      authDomain: "jbyc-76af5.firebaseapp.com",
-      databaseURL: "https://jbyc-76af5.firebaseio.com",
-      projectId: "jbyc-76af5",
-      storageBucket: "jbyc-76af5.appspot.com",
-      messagingSenderId: "959852895436"
-    };
-  
-    firebase.initializeApp(config);
+
+    firebase.initializeApp(firebaseConfig);
   }
   render() {
     return (
